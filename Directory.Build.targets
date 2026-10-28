@@ -2,5 +2,6 @@
   <PropertyGroup>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile></TargetFrameworkProfile>
+    <DefineConstants>$(DefineConstants);NET35</DefineConstants>
   </PropertyGroup>
 </Project>
