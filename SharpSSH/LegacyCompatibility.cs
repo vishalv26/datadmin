@@ -38,6 +38,21 @@ namespace Org.Mentalis.Security.Cryptography
             }
         }
 
+        public override string KeyExchangeAlgorithm
+        {
+            get { return "DiffieHellman"; }
+        }
+
+        public override string SignatureAlgorithm
+        {
+            get { return "SHA256"; }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+        }
+
         public override string ToXmlString(bool includePrivateParameters)
         {
             return string.Empty;
@@ -127,6 +142,12 @@ namespace Org.Mentalis.Security.Cryptography
         public int OutputBlockSize
         {
             get { return 1; }
+        }
+
+        public void Dispose()
+        {
+            _hashAlgorithm.Dispose();
+            _buffer.Dispose();
         }
 
         public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
