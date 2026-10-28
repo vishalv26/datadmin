@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: windows-2019
+    runs-on: windows-2022
     timeout-minutes: 30
 
     steps:
@@ -26,19 +26,7 @@ jobs:
       - name: Locate MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      - name: Inspect legacy .NET Framework reference assemblies
-        shell: pwsh
-        run: |
-          $refRoot = 'C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework'
-          if (Test-Path $refRoot) {
-            Get-ChildItem $refRoot -Directory | Select-Object -ExpandProperty Name
-          } else {
-            Write-Host "Reference assembly directory not found: $refRoot"
-          }
-          Write-Host "MSBuild version:"
-          msbuild -version
-
-      - name: Build original DatAdmin solution (no retargeting)
+      - name: Build original DatAdmin solution
         shell: pwsh
         run: |
           msbuild .\DatAdmin.sln `
