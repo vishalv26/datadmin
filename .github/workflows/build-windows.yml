@@ -1,0 +1,56 @@
+name: Build DatAdmin (legacy .NET Framework)
+
+on:
+  workflow_dispatch: {}  # Enables Run workflow in the GitHub Actions UI
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2022
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Locate MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Inspect legacy .NET Framework reference assemblies
+        shell: pwsh
+        run: |
+          $refRoot = 'C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework'
+          if (Test-Path $refRoot) {
+            Get-ChildItem $refRoot -Directory | Select-Object -ExpandProperty Name
+          } else {
+            Write-Host "Reference assembly directory not found: $refRoot"
+          }
+          Write-Host "MSBuild version:"
+          msbuild -version
+
+      - name: Build original DatAdmin solution (no retargeting)
+        shell: pwsh
+        run: |
+          msbuild .\DatAdmin.sln `
+            /t:Build `
+            /m `
+            /p:Configuration=Release `
+            '/p:Platform=Any CPU' `
+            /v:minimal `
+            '/flp:logfile=msbuild.log;verbosity=diagnostic'
+
+      - name: Upload build outputs and diagnostic log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: datadmin-build-diagnostics
+          path: |
+            msbuild.log
+            **/bin/Release/**
+          if-no-files-found: warn
+          retention-days: 14
