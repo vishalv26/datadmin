@@ -4,4 +4,8 @@
     <TargetFrameworkProfile></TargetFrameworkProfile>
     <DefineConstants>$(DefineConstants);NET35</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <Reference Include="System.Core" />
+  </ItemGroup>
 </Project>
